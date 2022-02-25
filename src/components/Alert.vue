@@ -1,5 +1,5 @@
 <template>
-  <template v-if="getErrorMessages().length > 0">
+  <template v-if="messages.length > 0">
     <div
       :class="[errorClass, 'container']"
       role="alert"
@@ -12,44 +12,42 @@
 </template>
 
 <script>
+import { ref, watch } from "vue";
 export default {
   props: ["errors"],
 
-  data() {
-    return {
-      messages: [],
-      errorClass: "alert alert-",
-    };
-  },
-  methods: {
-    getErrorMessages() {
-      const errors = this.errors;
+  setup(props) {
+    const messages = ref([]);
+    const errorClass = ref("alert alert-danger");
 
-      if (errors.messages && errors.messages.length > 0) {
-        const payloadMessages = errors.messages;
-        this.messages = payloadMessages;
-        this.setErrorClass(errors.type);
-        this.clearMessages();
-
-        return payloadMessages;
+    watch(
+      () => props.errors,
+      function (errors, oldErrors) {
+        if (errors.messages && errors.messages.length > 0) {
+          const payloadMessages = errors.messages;
+          messages.value = payloadMessages;
+          setErrorClass(errors.type);
+          clearMessages();
+        }
       }
-      return [];
-    },
+    );
 
-    setErrorClass(errorType) {
-      this.errorClass = "alert alert-" + errorType;
-    },
+    function setErrorClass(errorType) {
+      errorClass.value = "alert alert-" + errorType;
+    }
 
-    clearMessages() {
+    function clearMessages() {
       const mainTimeout = 1000;
-      this.messages.forEach((message, index) => {
+      messages.value.forEach((message, index) => {
         const timeout = mainTimeout * (index + 3);
 
         setTimeout(() => {
-          this.messages.shift();
+          messages.value.shift();
         }, timeout * (index + 1));
       });
-    },
+    }
+
+    return { messages, errorClass };
   },
 };
 </script>

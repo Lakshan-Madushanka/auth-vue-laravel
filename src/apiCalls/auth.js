@@ -1,4 +1,5 @@
 import http from "../http/axios";
+
 import * as authRoutes from "../router/apiRoutes/auth";
 
 export const signUp = async (payload) => {
@@ -30,20 +31,10 @@ const setCSRF = async () => {
 };
 
 const errorHandler = (response) => {
-  if (
-    response &&
-    response.status === 422 &&
-    response.data &&
-    response.data.errors
-  ) {
+  if (response.status === 422 && response.data && response.data.errors) {
     const messages = Object.values(response.data.errors);
     throw { messages: messages, type: "danger" };
   } else {
-    throw {
-      messages: [
-        "Unknown error occured (Make sure your connected to internet)",
-      ],
-      type: "danger",
-    };
+    throw { messages: ["Unknown error occured"], type: "danger" };
   }
 };

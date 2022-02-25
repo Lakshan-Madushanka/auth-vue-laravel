@@ -93,12 +93,15 @@
 </template>
 
 <script>
+import { reactive, computed, toRefs, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import useVuelidate from "@vuelidate/core";
+
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
 import Errors from "../../components/errors/Vuelidate.vue";
 import Spinner from "../../components/Spinner.vue";
 import { LOGIN, SIGN_UP } from "../../store/types";
-import { mapState } from "vuex";
 
 export default {
   components: {
@@ -106,54 +109,45 @@ export default {
     Spinner: Spinner,
   },
   setup() {
-    return {
-      v$: useVuelidate({ $lazy: true }),
-    };
-  },
+    const store = useStore();
+    const $route = useRoute();
 
-  data() {
-    return {
+    const user = reactive({
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
-      authState: this.$store.state.auth,
-    };
-  },
-  computed: mapState({ isLoading: (state) => state.auth.isLoading }),
-  methods: {
-    submit() {
-      if (!this.validateForm()) {
+      authState: store.state.auth,
+    });
+
+    const userRefs = toRefs(user);
+
+    function submit() {
+      if (!validateForm()) {
         return;
       }
-      if (this.$route.name == "signUp") {
-        let user = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          password_confirmation: this.confirmPassword,
+      if ($route.name == "signUp") {
+        let userPayload = {
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          password_confirmation: user.confirmPassword,
         };
 
-        this.$store.dispatch(SIGN_UP, user);
+        store.dispatch(SIGN_UP, userPayload);
       } else {
-        let user = {
-          email: this.email,
-          password: this.password,
-        };
-
-        this.$store.dispatch(LOGIN, user);
+        store.dispatch(LOGIN, user);
       }
-    },
-    validateForm() {
-      this.v$.$validate();
+    }
 
-      if (this.v$.$error) {
-        this.isValid = false;
+    function validateForm() {
+      v$.value.$validate();
+      if (v$.value.$error) {
         return false;
       }
       return true;
-    },
-    validationRules() {
+    }
+    function validationRules() {
       let rules = {
         email: { required, email },
         password: {
@@ -161,26 +155,35 @@ export default {
           minValue: minLength(5),
         },
       };
-      if (this.$route.name === "signUp") {
+      if ($route.name === "signUp") {
         rules["confirmPassword"] = {
           required,
-          sameAsPassword: sameAs(this.password),
+          sameAsPassword: sameAs(userRefs.password),
         };
         rules["name"] = { required };
       }
       return rules;
-    },
-    setConfirmPasswordRule() {
-      if (this.$route == "signUp") {
-        return {
-          required,
-          sameAsPassword: sameAs(this.password),
-        };
+    }
+
+    let v$ = useVuelidate(validationRules(), user, { $lazy: true });
+
+    watch(
+      () => $route.name,
+      function () {
+        v$ = useVuelidate(validationRules(), user, { $lazy: true });
       }
-    },
-  },
-  validations() {
-    return this.validationRules();
+    );
+
+    return {
+      v$,
+      name: userRefs.name,
+      email: userRefs.email,
+      password: userRefs.password,
+      confirmPassword: userRefs.confirmPassword,
+      authState: store.state.auth,
+      isLoading: computed(() => store.state.auth.isLoading),
+      submit,
+    };
   },
 };
 </script>

@@ -16,7 +16,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
-        <template v-if="!getAuthUser.isAuthenticated">
+        <template v-if="!isAuthenticated">
           <router-link to="/sign-in" tag="li" active-class="text-danger">
             <a class="nav-link" href="!#">Login</a>
           </router-link>
@@ -29,7 +29,7 @@
             <a class="nav-link" href="!#">Admin</a>
           </router-link>
           <a>
-            <a class="nav-link">{{ getAuthUser.user.email }}</a>
+            <a class="nav-link">{{ user.email }}</a>
           </a>
           <a class="nav-item">
             <a class="nav-link" @click="logOut">Log out</a>
@@ -53,18 +53,38 @@
 </style>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { ref, reactive, onBeforeMount } from "vue";
+import { useStore } from "vuex";
 import { GET_AUTH_USER, LOG_OUT } from "../store/types";
 export default {
-  computed: {
-    ...mapGetters({
-      getAuthUser: GET_AUTH_USER,
-    }),
-  },
-  methods: {
-    ...mapActions({
-      logOut: LOG_OUT,
-    }),
+  setup() {
+    const store = useStore();
+
+    const isAuthenticated = ref(false);
+    const user = reactive({
+      email: "",
+    });
+
+    function getAuthUser() {
+      let userData = store.getters[GET_AUTH_USER];
+
+      user.email = userData.user.email;
+      isAuthenticated.value = userData.isAuthenticated;
+    }
+    function logOut() {
+      return store.dispatch(LOG_OUT);
+    }
+
+    onBeforeMount(() => {
+      getAuthUser();
+    });
+
+    return {
+      getAuthUser,
+      logOut,
+      user,
+      isAuthenticated,
+    };
   },
 };
 </script>

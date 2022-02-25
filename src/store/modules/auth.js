@@ -59,7 +59,7 @@ const actions = {
     commit(SET_AUTH_LOADER, true);
 
     try {
-      await apiCalls.logIn(payload);
+       await apiCalls.logIn(payload);
 
       dispatch(LOAD_CURRENT_USER);
     } catch (errorsData) {
@@ -75,6 +75,7 @@ const actions = {
     try {
       await apiCalls.signUp(payload);
 
+      
       dispatch(LOAD_CURRENT_USER);
     } catch (errorsData) {
       commit(SET_ERRORS, errorsData);
@@ -87,7 +88,6 @@ const actions = {
     commit(SET_APP_LOADING, true);
 
     try {
-      await apiCalls.logOut();
       commit(RESET_AUTH_USER);
       $router.go();
     } catch (errorsData) {

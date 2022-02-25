@@ -5,13 +5,13 @@
         <div class="col-sm-12">
           <div class="col-sm-12 col-sm-offset-1 text-center">
             <div class="four_zero_four_bg">
-              <h1 class="text-center">{{ errorCode }}</h1>
+              <h1 class="text-center">{{ errorDetails.errorCode }}</h1>
             </div>
 
             <div class="contant_box_404">
               <h3 class="h2">Something went wrong !</h3>
 
-              <p class="error">{{ getErrorMessage() }} !</p>
+              <p class="error">{{ errorDetails.message }} !</p>
 
               <router-link to="/" class="link_404"> Go to Home </router-link>
 
@@ -33,32 +33,61 @@
 </template>
 
 <script>
+import { reactive, watch } from "vue";
+import { useRoute } from "vue-router";
 export default {
-  data() {
-    return {
-      errorCode: this.$route.query.status ?? 404,
-      errorMessages: {
-        404: "The page you are looking for not available",
-        403: "Ooops you can't be here ",
-        429: "Too many attempts try again later",
-        500: "Server Error!",
-        default: "Something went wrong ",
-      },
+  setup() {
+    let errorCode = 404;
+    const errorMessages = {
+      404: "The page you are looking for not available",
+      403: "Ooops you can't be here ",
+      429: "Too many attempts try again later",
+      500: "Server Error!",
+      default: "Something went wrong ",
     };
-  },
-  methods: {
-    getErrorMessage() {
-      switch (this.errorCode) {
+
+    const $route = useRoute();
+
+    const errorDetails = reactive({
+      errorCode: 404,
+      message: "Something went wrong",
+    });
+
+    watch($route.query.status, function () {
+      setErrorDetails($route.query.status);
+    });
+
+    function setErrorDetails(status) {
+      const message = getErrorMessage(status);
+      errorDetails.message = message;
+
+      setErrorCode();
+    }
+
+    function setErrorCode() {
+      const routeStatus = $route.query.status;
+      errorCode = routeStatus ? routeStatus : 404;
+      errorDetails.errorCode = errorCode;
+    }
+
+    function getErrorMessage(errorCode) {
+      switch (errorCode) {
         case 404:
-          return this.errorMessages[404];
+          return errorMessages[404];
         case 429:
-          return this.errorMessages[429];
+          return errorMessages[429];
         case 403:
-          return this.errorMessages[403];
+          return errorMessages[403];
         default:
-          return this.errorMessages["default"];
+          return errorMessages["default"];
       }
-    },
+    }
+
+    setErrorDetails();
+
+    return {
+      errorDetails: errorDetails,
+    };
   },
 };
 </script>

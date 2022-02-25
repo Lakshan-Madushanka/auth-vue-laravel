@@ -1,7 +1,6 @@
 import axios from "axios";
-import router from "../router/index";
 import { BASE_URL } from "../router/apiRoutes/main";
-import { errorHandler, networkErrorHandler } from "./errorHandler";
+import { errorHandler } from "./errorHandler";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -9,13 +8,19 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  (res) => {
-    return res.data;
+  (response) => {
+    return response.data;
   },
   (error) => {
-    networkErrorHandler(error);
+    if (!error.response && error.toJSON().message === "Network Error") {
+      alert("Ooops \n Netwok Error \n Make sure your connected to internet !");
+      throw new Error(error);
+    }
     const status = error.response.status;
-    return errorHandler(status, error);
+
+    errorHandler(status, error);
+
+    throw error;
   }
 );
 

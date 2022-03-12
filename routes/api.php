@@ -19,3 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/email/verify/{id}/{hash}', function($id) {
+
+    \App\Models\User::findOrFail($id)->markEmailAsVerified();
+    return response()->json(['status' => 'verified'], 200);
+
+})->middleware( 'signed', 'throttle:6,1')->name('verification.verify');

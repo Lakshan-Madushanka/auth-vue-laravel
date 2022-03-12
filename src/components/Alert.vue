@@ -22,7 +22,7 @@ export default {
 
     watch(
       () => props.errors,
-      function (errors, oldErrors) {
+      function (errors) {
         if (errors.messages && errors.messages.length > 0) {
           const payloadMessages = errors.messages;
           messages.value = payloadMessages;

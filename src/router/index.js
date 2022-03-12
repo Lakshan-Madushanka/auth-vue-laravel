@@ -6,6 +6,7 @@ import * as guards from "./guards";
 const Auth = () => import("../views/auth/Auth.vue");
 const Dashboard = () => import("../views/admin/Dashboard.vue");
 const Error = () => import("../views/errors/Error.vue");
+const EmailVerification = () => import("../views/auth/EmailVerification.vue");
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +31,12 @@ const router = createRouter({
       component: Auth,
       name: "signIn",
       beforeEnter: guards.authGuard,
+    },
+    {
+      path: "/resend/email-verification",
+      component: EmailVerification,
+      name: "resentVerficationNotice",
+      beforeEnter: guards.verifiedGuard,
     },
     {
       path: "/admin",

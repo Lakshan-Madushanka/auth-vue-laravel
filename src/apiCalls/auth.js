@@ -25,6 +25,16 @@ export const logIn = async (payload) => {
 export const logOut = async () => {
   await http.post(authRoutes.LOGOUT);
 };
+
+export const resendVerificationNotice = async () => {
+  try {
+    await http.post(authRoutes.EMAIL_VERIFY_NOTICE);
+  } catch (error) {
+    const errors = error.response;
+    errorHandler(errors);
+  }
+};
+
 const setCSRF = async () => {
   const response = await http.get(authRoutes.CSRF);
   return response;

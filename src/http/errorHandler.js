@@ -14,6 +14,9 @@ export const errorHandler = (status, error) => {
     case 403:
       return router.push({ name: "Error", query: { status: 403 } });
 
+    case 419:
+      return router.push({ name: "SignIn", query: { status: 403 } });
+
     case 429:
       return router.push({ name: "Error", query: { status: 429 } });
 

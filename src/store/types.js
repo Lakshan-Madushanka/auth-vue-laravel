@@ -12,6 +12,7 @@ export const AUTH_SUCCESS = "Auth/AUTH_SUCCESS";
 export const SET_AUTH_LOADER = "Auth/AUTH_USER_IS_LOADING";
 export const AUTH_FAIL = "Auth/AUTH_FAIL";
 export const RESET_AUTH_USER = "Auth/RESET_AUTH_USER";
+export const VERIFY_EMAIL = "Auth/VERIFY_EMAIL";
 
 //app
 export const SET_ERRORS = "ERRORS/SET_ERRORS";

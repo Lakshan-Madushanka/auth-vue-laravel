@@ -68,6 +68,7 @@ export default {
     function getAuthUser() {
       let userData = store.getters[GET_AUTH_USER];
 
+      console.log("user data", userData.user);
       user.email = userData.user.email;
       isAuthenticated.value = userData.isAuthenticated;
     }
@@ -76,6 +77,7 @@ export default {
     }
 
     onBeforeMount(() => {
+      console.log("on before mount");
       getAuthUser();
     });
 

@@ -1,3 +1,3 @@
 <template>
-  <h1>Ths is admn dashboard</h1>
+  <h1>Ths is admin dashboard</h1>
 </template>

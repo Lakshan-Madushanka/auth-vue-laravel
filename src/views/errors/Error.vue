@@ -50,12 +50,15 @@ export default {
 
     const errorDetails = reactive({
       errorCode: 404,
-      message: "Something went wrong",
+      message: "The page you are looking for not available",
     });
 
-    watch($route.query.status, function () {
-      setErrorDetails($route.query.status);
-    });
+    watch(
+      () => $route.query.status,
+      function () {
+        setErrorDetails($route.query.status);
+      }
+    );
 
     function setErrorDetails(status) {
       const message = getErrorMessage(status);
@@ -68,6 +71,7 @@ export default {
       const routeStatus = $route.query.status;
       errorCode = routeStatus ? routeStatus : 404;
       errorDetails.errorCode = errorCode;
+      errorDetails.message = getErrorMessage(errorCode);
     }
 
     function getErrorMessage(errorCode) {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../router/apiRoutes/main";
-import { errorHandler } from "./errorHandler";
+//import { errorHandler } from "./errorHandler";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -16,9 +16,10 @@ axiosInstance.interceptors.response.use(
       alert("Ooops \n Netwok Error \n Make sure your connected to internet !");
       throw new Error(error);
     }
-    const status = error.response.status;
+    //const status = error.response.status;
 
-    errorHandler(status, error);
+    console.log("errors", error.response);
+    //errorHandler(status, error);
 
     throw error;
   }

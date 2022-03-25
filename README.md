@@ -13,7 +13,7 @@ Following services has been used to develop the front-end.
 
 ## Features
 - **Authentcation**
-  - Login, Register
+  - Login|Register|Email Verify|Password Reset
 
 - **Global Error Handler**
 - **Global State Management (Vuex)**

@@ -25,3 +25,8 @@ Route::get('/email/verify/{id}/{hash}', function($id) {
     return response()->json(['status' => 'verified'], 200);
 
 })->middleware( 'signed', 'throttle:6,1')->name('verification.verify');
+
+
+Route::middleware(['throttle:3,1'])->post('forgot-password', [PasswordResetController::class, 'send']);
+
+Route::post('reset-password', [PasswordResetController::class, 'reset']);

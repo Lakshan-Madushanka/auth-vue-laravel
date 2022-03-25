@@ -1,9 +1,10 @@
 import router from "../router/index";
 
-export const errorHandler = (status, error) => {
+export const errorHandler = (status, error, retryAfter) => {
   if (status === 422) {
     throw error;
   }
+
   switch (status) {
     case 404:
       return router.push({ name: "Error", query: { status: 404 } });
@@ -18,7 +19,10 @@ export const errorHandler = (status, error) => {
       return router.push({ name: "SignIn", query: { status: 403 } });
 
     case 429:
-      return router.push({ name: "Error", query: { status: 429 } });
+      return router.push({
+        name: "Error",
+        query: { status: 429, after: retryAfter },
+      });
 
     case 500:
       return router.push({ name: "Error", query: { status: 500 } });

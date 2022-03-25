@@ -1,55 +1,48 @@
 <template>
-  <template v-if="messages.length > 0">
-    <div
-      :class="[errorClass, 'container']"
-      role="alert"
-      v-for="(message, index) in messages"
-      :key="index"
+  <div :class="alert.alertClass" role="alert">
+    <strong>{{ alert.message }}</strong>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+      @click="closeAlert()"
     >
-      {{ message }}
-    </div>
-  </template>
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { reactive, watch } from "vue";
+import { useStore } from "vuex";
+import { CLEAR_ALERT } from "../store/types";
 export default {
-  props: ["errors"],
-
+  props: ["data"],
   setup(props) {
-    const messages = ref([]);
-    const errorClass = ref("alert alert-danger");
+    const store = useStore();
+
+    const alert = reactive({
+      alertClass: "alert alert-dismissible fade show",
+      message: props.message,
+    });
+
+    function closeAlert() {
+      store.commit(CLEAR_ALERT);
+    }
 
     watch(
-      () => props.errors,
-      function (errors) {
-        if (errors.messages && errors.messages.length > 0) {
-          const payloadMessages = errors.messages;
-          messages.value = payloadMessages;
-          setErrorClass(errors.type);
-          clearMessages();
-        }
+      () => props.data,
+      function (data) {
+        alert.alertClass = alert.alertClass + " " + "alert-" + data.type;
+        alert.message = data.message;
+      },
+      {
+        immediate: true,
       }
     );
 
-    function setErrorClass(errorType) {
-      errorClass.value = "alert alert-" + errorType;
-    }
-
-    function clearMessages() {
-      const mainTimeout = 1000;
-      messages.value.forEach((message, index) => {
-        const timeout = mainTimeout * (index + 3);
-
-        setTimeout(() => {
-          messages.value.shift();
-        }, timeout * (index + 1));
-      });
-    }
-
-    return { messages, errorClass };
+    return { alert, closeAlert };
   },
 };
 </script>
-
-<style scoped></style>

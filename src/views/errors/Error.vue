@@ -9,9 +9,9 @@
             </div>
 
             <div class="contant_box_404">
-              <h3 class="h2">Something went wrong !</h3>
+              <h2 class="h2">Something went wrong !</h2>
 
-              <p class="error">{{ errorDetails.message }} !</p>
+              <h2 class="error">{{ errorDetails.message }} !</h2>
 
               <router-link to="/" class="link_404"> Go to Home </router-link>
 
@@ -62,6 +62,7 @@ export default {
 
     function setErrorDetails(status) {
       const message = getErrorMessage(status);
+
       errorDetails.message = message;
 
       setErrorCode();
@@ -71,14 +72,19 @@ export default {
       const routeStatus = $route.query.status;
       errorCode = routeStatus ? routeStatus : 404;
       errorDetails.errorCode = errorCode;
-      errorDetails.message = getErrorMessage(errorCode);
+      // errorDetails.message = getErrorMessage(errorCode);
     }
 
     function getErrorMessage(errorCode) {
+      errorCode = parseInt(errorCode);
+
       switch (errorCode) {
         case 404:
           return errorMessages[404];
         case 429:
+          if ($route.query.after) {
+            return "Please retry in " + $route.query.after + " seconds";
+          }
           return errorMessages[429];
         case 403:
           return errorMessages[403];
@@ -87,7 +93,7 @@ export default {
       }
     }
 
-    setErrorDetails();
+    setErrorDetails($route.query.status);
 
     return {
       errorDetails: errorDetails,

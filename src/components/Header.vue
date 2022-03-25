@@ -31,6 +31,9 @@
           <a>
             <a class="nav-link">{{ user.email }}</a>
           </a>
+          <router-link tag="li" to="/user/profile" active-class="text-danger">
+            <a class="nav-link" href="!#">Profile</a>
+          </router-link>
           <a class="nav-item">
             <a class="nav-link" @click="logOut">Log out</a>
           </a>
@@ -68,7 +71,6 @@ export default {
     function getAuthUser() {
       let userData = store.getters[GET_AUTH_USER];
 
-      console.log("user data", userData.user);
       user.email = userData.user.email;
       isAuthenticated.value = userData.isAuthenticated;
     }
@@ -77,7 +79,6 @@ export default {
     }
 
     onBeforeMount(() => {
-      console.log("on before mount");
       getAuthUser();
     });
 

@@ -52,6 +52,22 @@
               <VuelidateErrors :errors="v$.confirmPassword.$errors" />
             </template>
           </div>
+
+          <router-link
+            tag="li"
+            to="/forgot-password"
+            active-class="text-danger"
+            v-else
+          >
+            <button
+              class="btn btn-primary btn-sm"
+              href="!#"
+              v-if="$route.name === 'signIn'"
+            >
+              Forgot password
+            </button>
+          </router-link>
+
           <button
             v-if="!isLoading"
             class="button login__submit"

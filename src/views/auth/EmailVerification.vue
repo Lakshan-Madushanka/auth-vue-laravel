@@ -47,19 +47,16 @@ export default {
     const store = useStore();
 
     watch(store.state.auth, function (authState) {
-      console.log("not watching");
       state.isLoading = authState.isLoading;
       state.isSent = true;
       state.isVerified = authState.verified;
     });
 
     function verifyEmail() {
-      console.log("cliked");
       store.dispatch(VERIFY_EMAIL);
     }
 
     function refresh() {
-      console.log("cliked");
       window.location.reload();
     }
 
